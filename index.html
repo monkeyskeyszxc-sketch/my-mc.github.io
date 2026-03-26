@@ -16,6 +16,7 @@
             --dark: #050505;
             --glass: rgba(0, 0, 0, 0.8);
             --glass-border: rgba(255, 255, 255, 0.1);
+            --danger: #ff4b2b;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Montserrat', sans-serif; }
@@ -37,7 +38,6 @@
         }
         @keyframes moveGradient { 0% { background-position: 0% 50%; } 100% { background-position: 100% 50%; } }
 
-        /* NAVIGÁCIA */
         nav {
             position: fixed; top: 0; width: 100%; padding: 25px 50px;
             display: flex; justify-content: space-between; align-items: center;
@@ -56,7 +56,6 @@
         .page-section { display: none; min-height: 100vh; padding-top: 120px; padding-bottom: 50px; }
         .active { display: block !important; }
 
-        /* HERO - HLAVNÁ STRÁNKA */
         .hero { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
         .copy-ip-box {
             background: rgba(255,255,255,0.05); border: 2px solid var(--primary);
@@ -73,12 +72,11 @@
         }
         .feature-card {
             background: var(--glass); padding: 40px; border-radius: 20px;
-            border: 1px solid var(--glass-border); text-align: left; transition: 0.3s;
+            border: 1px solid var(--glass-border); text-align: left; transition: 0.3s; cursor: pointer;
         }
         .feature-card:hover { border-color: var(--secondary); transform: translateY(-10px); }
         .feature-card i { font-size: 2rem; color: var(--primary); margin-bottom: 20px; }
 
-        /* KONZOLA */
         .console-container {
             max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 300px 1fr; gap: 20px; padding: 20px;
         }
@@ -104,6 +102,12 @@
             cursor: pointer; text-transform: uppercase; letter-spacing: 2px; background: var(--primary); color: black;
         }
 
+        .glass-card {
+            background: var(--glass); backdrop-filter: blur(15px);
+            border: 1px solid var(--glass-border); border-radius: 20px; padding: 40px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.9);
+        }
+
         footer { padding: 40px; text-align: center; opacity: 0.3; font-size: 0.7rem; letter-spacing: 2px; }
     </style>
 </head>
@@ -112,7 +116,6 @@
     <nav>
         <div class="dehisk-gradient" style="font-size: 1.8rem; cursor:pointer;" onclick="showSection('hero')">MY-MC.EU</div>
         
-        <!-- LOGIN / REGISTER VPRAVO -->
         <div class="auth-buttons" id="nav-guest">
             <div class="btn-nav" onclick="showSection('login-page')">Login</div>
             <div class="btn-nav" style="border-color: var(--primary)" onclick="toggleAuth('r')">Register</div>
@@ -121,16 +124,15 @@
         <div class="auth-buttons" id="nav-user" style="display:none;">
             <div class="btn-nav" onclick="showSection('my-servers')">Servers</div>
             <div class="btn-nav" onclick="showSection('create-srv')">Create</div>
-            <div class="btn-nav" style="color:var(--danger)" onclick="location.reload()">Logout</div>
+            <div class="btn-nav" style="color:var(--danger)" onclick="location.reload()">Logout [<span id="u-display"></span>]</div>
         </div>
     </nav>
 
-    <!-- HLAVNÁ STRÁNKA -->
     <section id="hero" class="page-section active hero">
         <div class="copy-ip-box" onclick="copyIP()">
             <span id="copy-status">Klikni pre skopírovanie IP</span>
             <h2 class="dehisk-gradient">MY-MC.EU</h2>
-            <p style="font-size: 0.6rem; opacity: 0.5;">Verzia: 1.20.1 | Hráčov: 42/100</p>
+            <p style="font-size: 0.6rem; opacity: 0.5;">IP: 185.107.193.11 | Port: 21301 | Verzia: 1.20.1</p>
         </div>
 
         <div class="hosting-grid">
@@ -142,17 +144,16 @@
             <div class="feature-card" onclick="gate('create-srv')">
                 <i class="fas fa-globe"></i>
                 <h3>Vlastná Doména</h3>
-                <p>Prepoj si server s vlastnou doménou cez naše Name Servery.</p>
+                <p>Prepoj si server s vlastnou doménou cez naše Name Servery: ns1.my-mc.eu</p>
             </div>
             <div class="feature-card" onclick="gate('my-servers')">
                 <i class="fas fa-terminal"></i>
                 <h3>Live Console</h3>
-                <p>Spravuj svoj server v reálnom čase s prístupom k súborom.</p>
+                <p>Spravuj svoj server v reálnom čase s prístupom k 200 riadkom logu.</p>
             </div>
         </div>
     </section>
 
-    <!-- AUTH SECTION -->
     <section id="login-page" class="page-section">
         <div style="max-width: 400px; margin: 0 auto;">
             <div class="glass-card" id="l-box">
@@ -160,23 +161,24 @@
                 <input type="text" id="log-u" placeholder="Meno">
                 <input type="password" id="log-p" placeholder="Heslo">
                 <button class="btn-main" style="width:100%" onclick="handleLogin()">VSTÚPIŤ</button>
+                <p onclick="toggleAuth('r')" style="text-align:center; font-size:0.7rem; margin-top:15px; cursor:pointer;">Nemáš účet? Registruj sa</p>
             </div>
             <div class="glass-card" id="r-box" style="display:none;">
                 <h2 class="dehisk-gradient">REGISTRÁCIA</h2>
                 <input type="text" id="reg-u" placeholder="Zvoľ meno">
                 <input type="password" id="reg-p" placeholder="Zvoľ heslo">
                 <button class="btn-main" style="width:100%; background:var(--secondary); color:white" onclick="handleRegister()">VYTVORIŤ</button>
+                <p onclick="toggleAuth('l')" style="text-align:center; font-size:0.7rem; margin-top:15px; cursor:pointer;">Späť na prihlásenie</p>
             </div>
         </div>
     </section>
 
-    <!-- CREATE SERVER -->
     <section id="create-srv" class="page-section">
         <div style="max-width: 500px; margin: 0 auto;">
             <div class="glass-card">
                 <h2 class="dehisk-gradient">NOVÁ INŠTANCIA</h2>
                 <input type="text" id="new-n" placeholder="Názov servera">
-                <input type="text" id="new-d" placeholder="Vlastná doména (voliteľné)">
+                <input type="text" id="new-d" placeholder="Vlastná doména (napr. ns1.mojadomena.sk)">
                 <select id="new-s">
                     <option value="Purpur">Purpur</option>
                     <option value="Paper">PaperMC</option>
@@ -186,7 +188,6 @@
         </div>
     </section>
 
-    <!-- SERVER LIST -->
     <section id="my-servers" class="page-section">
         <div style="padding: 0 50px;">
             <h2 class="dehisk-gradient" style="margin-bottom: 30px;">TVOJE AKTÍVNE SLUŽBY</h2>
@@ -194,22 +195,27 @@
         </div>
     </section>
 
-    <!-- CONSOLE / TERMINAL -->
     <section id="panel-sec" class="page-section">
         <div class="console-container">
             <div class="glass-card" style="padding: 20px;">
                 <h4 class="dehisk-gradient" style="font-size: 0.7rem; margin-bottom: 20px;">FILESYSTEM</h4>
-                <div id="file-list-div"></div>
+                <div id="file-list-div" style="font-size:0.8rem; color:#aaa;">
+                    /root<br>
+                    &nbsp;&nbsp;L server.properties<br>
+                    &nbsp;&nbsp;L ops.json<br>
+                    &nbsp;&nbsp;L whitelist.txt<br>
+                    &nbsp;&nbsp;L logs/
+                </div>
             </div>
             <div>
                 <div class="console-log" id="p-console"></div>
                 <div class="console-input-wrap">
                     <span style="color:#555">></span>
-                    <input type="text" id="c-input" placeholder="Zadaj príkaz (napr. op Dehisk)..." onkeydown="if(event.key==='Enter') sendCommand()">
+                    <input type="text" id="c-input" placeholder="Zadaj príkaz (napr. op hráč)..." onkeydown="if(event.key==='Enter') sendCommand()">
                 </div>
                 <div style="margin-top: 15px; display:flex; gap:10px;">
                     <button class="btn-main" style="padding: 10px 20px; font-size: 0.7rem;" onclick="startServer()">Štart</button>
-                    <button class="btn-main" style="padding: 10px 20px; font-size: 0.7rem; background:#ff4b2b" onclick="location.reload()">Stop</button>
+                    <button class="btn-main" style="padding: 10px 20px; font-size: 0.7rem; background:#ff4b2b" onclick="showSection('my-servers')">Zatvoriť panel</button>
                 </div>
             </div>
         </div>
@@ -218,15 +224,23 @@
     <footer>MY-MC.EU | POWERED BY DEHISK INFRASTRUCTURE | 2026</footer>
 
     <script>
+        const CONFIG = { IP: '185.107.193.11', PORT: 21301, POCET_BOTOV: 50, VERZIA: '1.20.1', HESLO: "heslo123" };
         let user = null;
         let activeIdx = null;
         let consoleHistory = [];
 
         async function getDB() {
-            try { let r = await fetch('save.php'); return await r.json(); } catch(e) { return {}; }
+            try { 
+                let r = await fetch('save.php');
+                let txt = await r.text();
+                return txt ? JSON.parse(txt) : {};
+            } catch(e) { console.error("DB Load Error:", e); return {}; }
         }
+
         async function saveDB(db) {
-            await fetch('save.php', { method: 'POST', body: JSON.stringify(db, null, 2) });
+            try {
+                await fetch('save.php', { method: 'POST', body: JSON.stringify(db) });
+            } catch(e) { console.error("DB Save Error:", e); }
         }
 
         function copyIP() {
@@ -248,7 +262,8 @@
         }
 
         async function handleRegister() {
-            let u = document.getElementById('reg-u').value, p = document.getElementById('reg-p').value;
+            let u = document.getElementById('reg-u').value.trim(), p = document.getElementById('reg-p').value.trim();
+            if(!u || !p) return alert("Vyplň všetko!");
             let db = await getDB();
             if(db[u]) return alert("Meno je obsadené!");
             db[u] = { pass: p, servers: [] };
@@ -257,25 +272,25 @@
         }
 
         async function handleLogin() {
-            let u = document.getElementById('log-u').value, p = document.getElementById('log-p').value;
+            let u = document.getElementById('log-u').value.trim(), p = document.getElementById('log-p').value.trim();
             let db = await getDB();
             if(db[u] && db[u].pass === p) {
                 user = u;
-                document.getElementById('u-name').innerText = u;
+                document.getElementById('u-display').innerText = u;
                 document.getElementById('nav-guest').style.display = 'none';
                 document.getElementById('nav-user').style.display = 'flex';
                 showSection('my-servers');
-            } else alert("Chyba!");
+            } else alert("Nesprávne meno alebo heslo!");
         }
 
         async function createServer() {
             let n = document.getElementById('new-n').value, d = document.getElementById('new-d').value;
-            if(!n) return;
+            if(!n) return alert("Zadaj názov!");
             let db = await getDB();
             let port = Math.floor(Math.random()*10000)+20000;
             db[user].servers.push({
-                name: n, domain: d || (n.toLowerCase()+".my-mc.eu"), port: port,
-                files: { 'server.properties': 'port='+port, 'ops.json': '[]', 'whitelist.txt': '' }
+                name: n, domain: d || (n.toLowerCase().replace(/\s/g,'')+".my-mc.eu"), port: port,
+                files: { 'server.properties': 'port='+port, 'ops.json': '[]' }
             });
             await saveDB(db);
             showSection('my-servers');
@@ -284,18 +299,20 @@
         async function renderServers() {
             let div = document.getElementById('srv-list'); div.innerHTML = "";
             let db = await getDB();
+            if(!db[user] || !db[user].servers) return;
             db[user].servers.forEach((s, i) => {
                 div.innerHTML += `<div class="glass-card">
-                    <h3>${s.name}</h3>
-                    <p style="color:var(--primary); font-size:0.8rem;">${s.domain}</p>
-                    <button class="btn-main" style="width:100%; margin-top:15px; font-size:0.7rem;" onclick="openPanel(${i})">MANAŽOVAŤ</button>
+                    <h3 class="dehisk-gradient">${s.name}</h3>
+                    <p style="color:var(--primary); font-size:0.8rem; margin:10px 0;">${s.domain}</p>
+                    <p style="font-size:0.6rem; opacity:0.6;">Node IP: ${CONFIG.IP}:${s.port}</p>
+                    <button class="btn-main" style="width:100%; margin-top:15px; font-size:0.7rem;" onclick="openPanel(${i})">KONZOLA</button>
                 </div>`;
             });
         }
 
         function openPanel(idx) {
             activeIdx = idx;
-            document.getElementById('p-console').innerHTML = "Terminál pripravený. Napíš 'start' alebo klikni na tlačidlo.";
+            document.getElementById('p-console').innerHTML = "Systém pripravený. Čakám na štart...";
             showSection('panel-sec');
         }
 
@@ -303,30 +320,26 @@
             let inp = document.getElementById('c-input');
             let cmd = inp.value.trim();
             if(!cmd) return;
-
             addToConsole("> " + cmd);
-            
-            // Logika príkazov
-            if(cmd.startsWith("op ")) addToConsole("[Server] Hráč " + cmd.split(" ")[1] + " bol vymenovaný za operátora.");
-            else if(cmd === "stop") addToConsole("[Server] Vypínanie..."), setTimeout(() => location.reload(), 1000);
-            else if(cmd === "help") addToConsole("Dostupné: op, deop, stop, whitelist, ban, kick, help");
-            else addToConsole("[Server] Neznámy príkaz. Skús 'help'.");
-
+            if(cmd.startsWith("op ")) addToConsole("[Server] Made " + cmd.split(" ")[1] + " a server operator.");
+            else if(cmd === "stop") addToConsole("[Server] Stopping server..."), setTimeout(() => showSection('my-servers'), 1000);
+            else if(cmd === "help") addToConsole("Príkazy: op, deop, stop, whitelist, ban, kick, say, list");
+            else addToConsole("[Server] Unknown command. Type 'help'.");
             inp.value = "";
         }
 
         function addToConsole(text) {
             let con = document.getElementById('p-console');
-            consoleHistory.push(text);
+            consoleHistory.push(`[${new Date().toLocaleTimeString()}] ${text}`);
             if(consoleHistory.length > 200) consoleHistory.shift();
             con.innerHTML = consoleHistory.join("<br>");
             con.scrollTop = con.scrollHeight;
         }
 
         function startServer() {
-            addToConsole("Načítavam knižnice...");
-            setTimeout(() => addToConsole("[Purpur] Štartujem Minecraft server na porte 25565..."), 1000);
-            setTimeout(() => addToConsole("[Purpur] Server beží! Doména: nasmerovaná."), 2000);
+            addToConsole("Loading server.properties...");
+            addToConsole("Starting Minecraft server version " + CONFIG.IP);
+            setTimeout(() => addToConsole("[Purpur] Server started on " + CONFIG.IP), 800);
         }
 
         function gate(t) { if(!user) showSection('login-page'); else showSection(t); }
