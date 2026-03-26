@@ -1,1 +1,335 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MY-MC.EU | Professional Cloud Hosting</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Syncopate:wght@400;700&family=Montserrat:wght@300;400;700;900&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
+    <style>
+        :root {
+            --primary: #00f2ff;
+            --secondary: #7000ff;
+            --accent: #ff00c8;
+            --dark: #050505;
+            --glass: rgba(0, 0, 0, 0.8);
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Montserrat', sans-serif; }
+        body { background: var(--dark); color: white; overflow-x: hidden; }
+
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-image: url('https://images.unsplash.com/photo-1608111283390-2e333b9b279c?q=80&w=1920');
+            background-size: cover; background-position: center;
+            filter: blur(15px) brightness(0.2); z-index: -1;
+        }
+
+        .dehisk-gradient {
+            background: linear-gradient(90deg, var(--primary), var(--secondary), var(--accent), var(--primary));
+            background-size: 300%; -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            animation: moveGradient 5s linear infinite; font-family: 'Syncopate', sans-serif; font-weight: 700;
+        }
+        @keyframes moveGradient { 0% { background-position: 0% 50%; } 100% { background-position: 100% 50%; } }
+
+        /* NAVIGÁCIA */
+        nav {
+            position: fixed; top: 0; width: 100%; padding: 25px 50px;
+            display: flex; justify-content: space-between; align-items: center;
+            background: rgba(0, 0, 0, 0.9); backdrop-filter: blur(20px); z-index: 1000;
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        .auth-buttons { display: flex; gap: 15px; }
+        .btn-nav { 
+            padding: 10px 20px; border-radius: 5px; text-decoration: none; 
+            font-size: 0.7rem; font-weight: 900; text-transform: uppercase; cursor: pointer;
+            transition: 0.3s; border: 1px solid var(--glass-border); color: white;
+        }
+        .btn-nav:hover { background: var(--primary); color: black; border-color: var(--primary); }
+
+        .page-section { display: none; min-height: 100vh; padding-top: 120px; padding-bottom: 50px; }
+        .active { display: block !important; }
+
+        /* HERO - HLAVNÁ STRÁNKA */
+        .hero { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+        .copy-ip-box {
+            background: rgba(255,255,255,0.05); border: 2px solid var(--primary);
+            padding: 30px 60px; border-radius: 20px; cursor: pointer;
+            transition: 0.4s; margin-bottom: 40px; position: relative;
+        }
+        .copy-ip-box:hover { transform: scale(1.05); box-shadow: 0 0 40px rgba(0, 242, 255, 0.3); }
+        .copy-ip-box h2 { font-size: 3rem; letter-spacing: 5px; }
+        .copy-ip-box span { font-size: 0.7rem; color: var(--primary); text-transform: uppercase; letter-spacing: 2px; }
+
+        .hosting-grid {
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px;
+            max-width: 1100px; width: 90%;
+        }
+        .feature-card {
+            background: var(--glass); padding: 40px; border-radius: 20px;
+            border: 1px solid var(--glass-border); text-align: left; transition: 0.3s;
+        }
+        .feature-card:hover { border-color: var(--secondary); transform: translateY(-10px); }
+        .feature-card i { font-size: 2rem; color: var(--primary); margin-bottom: 20px; }
+
+        /* KONZOLA */
+        .console-container {
+            max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 300px 1fr; gap: 20px; padding: 20px;
+        }
+        .console-log {
+            background: #000; border: 1px solid #222; border-radius: 10px;
+            height: 500px; overflow-y: auto; padding: 20px; font-family: 'Fira Code', monospace;
+            font-size: 0.85rem; color: #00ff87; line-height: 1.6;
+        }
+        .console-input-wrap {
+            display: flex; gap: 10px; background: #111; padding: 10px; border-radius: 0 0 10px 10px; border: 1px solid #222; border-top: none;
+        }
+        .console-input-wrap input {
+            flex: 1; background: transparent; border: none; color: white; outline: none; font-family: 'Fira Code', monospace;
+        }
+
+        input, select {
+            width: 100%; padding: 15px; margin: 10px 0; background: rgba(0,0,0,0.6);
+            border: 1px solid var(--glass-border); color: white; border-radius: 10px; outline: none;
+        }
+
+        .btn-main {
+            padding: 15px 40px; border: none; border-radius: 10px; font-weight: 900;
+            cursor: pointer; text-transform: uppercase; letter-spacing: 2px; background: var(--primary); color: black;
+        }
+
+        footer { padding: 40px; text-align: center; opacity: 0.3; font-size: 0.7rem; letter-spacing: 2px; }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="dehisk-gradient" style="font-size: 1.8rem; cursor:pointer;" onclick="showSection('hero')">MY-MC.EU</div>
+        
+        <!-- LOGIN / REGISTER VPRAVO -->
+        <div class="auth-buttons" id="nav-guest">
+            <div class="btn-nav" onclick="showSection('login-page')">Login</div>
+            <div class="btn-nav" style="border-color: var(--primary)" onclick="toggleAuth('r')">Register</div>
+        </div>
+        
+        <div class="auth-buttons" id="nav-user" style="display:none;">
+            <div class="btn-nav" onclick="showSection('my-servers')">Servers</div>
+            <div class="btn-nav" onclick="showSection('create-srv')">Create</div>
+            <div class="btn-nav" style="color:var(--danger)" onclick="location.reload()">Logout</div>
+        </div>
+    </nav>
+
+    <!-- HLAVNÁ STRÁNKA -->
+    <section id="hero" class="page-section active hero">
+        <div class="copy-ip-box" onclick="copyIP()">
+            <span id="copy-status">Klikni pre skopírovanie IP</span>
+            <h2 class="dehisk-gradient">MY-MC.EU</h2>
+            <p style="font-size: 0.6rem; opacity: 0.5;">Verzia: 1.20.1 | Hráčov: 42/100</p>
+        </div>
+
+        <div class="hosting-grid">
+            <div class="feature-card" onclick="gate('create-srv')">
+                <i class="fas fa-server"></i>
+                <h3>Free Hosting</h3>
+                <p>Získaj vlastnú inštanciu s Purpur softvérom úplne zadarmo.</p>
+            </div>
+            <div class="feature-card" onclick="gate('create-srv')">
+                <i class="fas fa-globe"></i>
+                <h3>Vlastná Doména</h3>
+                <p>Prepoj si server s vlastnou doménou cez naše Name Servery.</p>
+            </div>
+            <div class="feature-card" onclick="gate('my-servers')">
+                <i class="fas fa-terminal"></i>
+                <h3>Live Console</h3>
+                <p>Spravuj svoj server v reálnom čase s prístupom k súborom.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- AUTH SECTION -->
+    <section id="login-page" class="page-section">
+        <div style="max-width: 400px; margin: 0 auto;">
+            <div class="glass-card" id="l-box">
+                <h2 class="dehisk-gradient">PRIHLÁSENIE</h2>
+                <input type="text" id="log-u" placeholder="Meno">
+                <input type="password" id="log-p" placeholder="Heslo">
+                <button class="btn-main" style="width:100%" onclick="handleLogin()">VSTÚPIŤ</button>
+            </div>
+            <div class="glass-card" id="r-box" style="display:none;">
+                <h2 class="dehisk-gradient">REGISTRÁCIA</h2>
+                <input type="text" id="reg-u" placeholder="Zvoľ meno">
+                <input type="password" id="reg-p" placeholder="Zvoľ heslo">
+                <button class="btn-main" style="width:100%; background:var(--secondary); color:white" onclick="handleRegister()">VYTVORIŤ</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- CREATE SERVER -->
+    <section id="create-srv" class="page-section">
+        <div style="max-width: 500px; margin: 0 auto;">
+            <div class="glass-card">
+                <h2 class="dehisk-gradient">NOVÁ INŠTANCIA</h2>
+                <input type="text" id="new-n" placeholder="Názov servera">
+                <input type="text" id="new-d" placeholder="Vlastná doména (voliteľné)">
+                <select id="new-s">
+                    <option value="Purpur">Purpur</option>
+                    <option value="Paper">PaperMC</option>
+                </select>
+                <button class="btn-main" style="width:100%" onclick="createServer()">GENEROVAŤ</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- SERVER LIST -->
+    <section id="my-servers" class="page-section">
+        <div style="padding: 0 50px;">
+            <h2 class="dehisk-gradient" style="margin-bottom: 30px;">TVOJE AKTÍVNE SLUŽBY</h2>
+            <div id="srv-list" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 30px;"></div>
+        </div>
+    </section>
+
+    <!-- CONSOLE / TERMINAL -->
+    <section id="panel-sec" class="page-section">
+        <div class="console-container">
+            <div class="glass-card" style="padding: 20px;">
+                <h4 class="dehisk-gradient" style="font-size: 0.7rem; margin-bottom: 20px;">FILESYSTEM</h4>
+                <div id="file-list-div"></div>
+            </div>
+            <div>
+                <div class="console-log" id="p-console"></div>
+                <div class="console-input-wrap">
+                    <span style="color:#555">></span>
+                    <input type="text" id="c-input" placeholder="Zadaj príkaz (napr. op Dehisk)..." onkeydown="if(event.key==='Enter') sendCommand()">
+                </div>
+                <div style="margin-top: 15px; display:flex; gap:10px;">
+                    <button class="btn-main" style="padding: 10px 20px; font-size: 0.7rem;" onclick="startServer()">Štart</button>
+                    <button class="btn-main" style="padding: 10px 20px; font-size: 0.7rem; background:#ff4b2b" onclick="location.reload()">Stop</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>MY-MC.EU | POWERED BY DEHISK INFRASTRUCTURE | 2026</footer>
+
+    <script>
+        let user = null;
+        let activeIdx = null;
+        let consoleHistory = [];
+
+        async function getDB() {
+            try { let r = await fetch('save.php'); return await r.json(); } catch(e) { return {}; }
+        }
+        async function saveDB(db) {
+            await fetch('save.php', { method: 'POST', body: JSON.stringify(db, null, 2) });
+        }
+
+        function copyIP() {
+            navigator.clipboard.writeText("MY-MC.EU");
+            document.getElementById('copy-status').innerText = "SKOPÍROVANÉ!";
+            setTimeout(() => { document.getElementById('copy-status').innerText = "Klikni pre skopírovanie IP"; }, 2000);
+        }
+
+        function showSection(id) {
+            document.querySelectorAll('.page-section').forEach(s => s.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            if(id === 'my-servers') renderServers();
+        }
+
+        function toggleAuth(type) {
+            showSection('login-page');
+            document.getElementById('l-box').style.display = type === 'l' ? 'block' : 'none';
+            document.getElementById('r-box').style.display = type === 'r' ? 'block' : 'none';
+        }
+
+        async function handleRegister() {
+            let u = document.getElementById('reg-u').value, p = document.getElementById('reg-p').value;
+            let db = await getDB();
+            if(db[u]) return alert("Meno je obsadené!");
+            db[u] = { pass: p, servers: [] };
+            await saveDB(db);
+            alert("Účet vytvorený!"); toggleAuth('l');
+        }
+
+        async function handleLogin() {
+            let u = document.getElementById('log-u').value, p = document.getElementById('log-p').value;
+            let db = await getDB();
+            if(db[u] && db[u].pass === p) {
+                user = u;
+                document.getElementById('u-name').innerText = u;
+                document.getElementById('nav-guest').style.display = 'none';
+                document.getElementById('nav-user').style.display = 'flex';
+                showSection('my-servers');
+            } else alert("Chyba!");
+        }
+
+        async function createServer() {
+            let n = document.getElementById('new-n').value, d = document.getElementById('new-d').value;
+            if(!n) return;
+            let db = await getDB();
+            let port = Math.floor(Math.random()*10000)+20000;
+            db[user].servers.push({
+                name: n, domain: d || (n.toLowerCase()+".my-mc.eu"), port: port,
+                files: { 'server.properties': 'port='+port, 'ops.json': '[]', 'whitelist.txt': '' }
+            });
+            await saveDB(db);
+            showSection('my-servers');
+        }
+
+        async function renderServers() {
+            let div = document.getElementById('srv-list'); div.innerHTML = "";
+            let db = await getDB();
+            db[user].servers.forEach((s, i) => {
+                div.innerHTML += `<div class="glass-card">
+                    <h3>${s.name}</h3>
+                    <p style="color:var(--primary); font-size:0.8rem;">${s.domain}</p>
+                    <button class="btn-main" style="width:100%; margin-top:15px; font-size:0.7rem;" onclick="openPanel(${i})">MANAŽOVAŤ</button>
+                </div>`;
+            });
+        }
+
+        function openPanel(idx) {
+            activeIdx = idx;
+            document.getElementById('p-console').innerHTML = "Terminál pripravený. Napíš 'start' alebo klikni na tlačidlo.";
+            showSection('panel-sec');
+        }
+
+        function sendCommand() {
+            let inp = document.getElementById('c-input');
+            let cmd = inp.value.trim();
+            if(!cmd) return;
+
+            addToConsole("> " + cmd);
+            
+            // Logika príkazov
+            if(cmd.startsWith("op ")) addToConsole("[Server] Hráč " + cmd.split(" ")[1] + " bol vymenovaný za operátora.");
+            else if(cmd === "stop") addToConsole("[Server] Vypínanie..."), setTimeout(() => location.reload(), 1000);
+            else if(cmd === "help") addToConsole("Dostupné: op, deop, stop, whitelist, ban, kick, help");
+            else addToConsole("[Server] Neznámy príkaz. Skús 'help'.");
+
+            inp.value = "";
+        }
+
+        function addToConsole(text) {
+            let con = document.getElementById('p-console');
+            consoleHistory.push(text);
+            if(consoleHistory.length > 200) consoleHistory.shift();
+            con.innerHTML = consoleHistory.join("<br>");
+            con.scrollTop = con.scrollHeight;
+        }
+
+        function startServer() {
+            addToConsole("Načítavam knižnice...");
+            setTimeout(() => addToConsole("[Purpur] Štartujem Minecraft server na porte 25565..."), 1000);
+            setTimeout(() => addToConsole("[Purpur] Server beží! Doména: nasmerovaná."), 2000);
+        }
+
+        function gate(t) { if(!user) showSection('login-page'); else showSection(t); }
+    </script>
+</body>
+</html>
