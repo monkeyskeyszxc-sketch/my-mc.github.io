@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My-MC.eu | ULTIMATE TERMINAL by Dehisk</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Syncopate:wght@400;700&family=Montserrat:wght@300;400;700;900&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary: #00f2ff;
+            --secondary: #7000ff;
+            --accent: #ff00c8;
+            --dark: #020202;
+            --glass: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --success: #00ff87;
+            --danger: #ff4b2b;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Montserrat', sans-serif; }
+        body { background: var(--dark); color: white; overflow-x: hidden; }
+
+        /* RGB ANIMÁCIE */
+        .dehisk-gradient {
+            background: linear-gradient(90deg, var(--primary), var(--secondary), var(--accent), var(--primary));
+            background-size: 300%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: moveGradient 5s linear infinite;
+            font-family: 'Syncopate', sans-serif;
+            font-weight: 700;
+        }
+
+        @keyframes moveGradient { 0% { background-position: 0% 50%; } 100% { background-position: 100% 50%; } }
+
+        /* NAVIGÁCIA */
+        nav {
+            position: fixed; top: 0; width: 100%; padding: 20px 40px;
+            display: flex; justify-content: space-between; align-items: center;
+            background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(20px); z-index: 1000;
+            border-bottom: 1px solid var(--glass-border);
+        }
+        .nav-links { display: flex; gap: 25px; }
+        .nav-links a { color: white; text-decoration: none; font-weight: 700; font-size: 0.7rem; letter-spacing: 2px; text-transform: uppercase; cursor: pointer; transition: 0.3s; }
+        .nav-links a:hover { color: var(--primary); text-shadow: 0 0 10px var(--primary); }
+
+        /* SEKCIE */
+        .page-section { display: none; min-height: 100vh; padding-top: 120px; }
+        .active { display: block !important; }
+
+        /* HERO */
+        .hero { height: 100vh; display: flex; align-items: center; justify-content: center; text-align: center; }
+        .hero h1 { font-size: 5rem; font-weight: 900; line-height: 1; margin-bottom: 20px; }
+
+        /* CARD DESIGN */
+        .glass-card {
+            background: var(--glass); backdrop-filter: blur(15px);
+            border: 1px solid var(--glass-border); border-radius: 20px; padding: 35px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+        }
+
+        /* VSTUPY */
+        input, select {
+            width: 100%; padding: 15px; margin: 10px 0; background: rgba(255,255,255,0.05);
+            border: 1px solid var(--glass-border); color: white; border-radius: 10px; outline: none;
+        }
+        input:focus { border-color: var(--primary); }
+
+        /* TLAČIDLÁ */
+        .btn {
+            padding: 15px 30px; border: none; border-radius: 10px; font-weight: 900;
+            cursor: pointer; text-transform: uppercase; letter-spacing: 2px; transition: 0.4s;
+        }
+        .btn-primary { background: var(--primary); color: black; box-shadow: 0 0 20px rgba(0, 242, 255, 0.3); }
+        .btn-primary:hover { background: white; transform: scale(1.05); }
+
+        /* PANEL LAYOUT */
+        .panel-grid { display: grid; grid-template-columns: 280px 1fr; gap: 20px; max-width: 1400px; margin: 0 auto; padding: 20px; }
+        .file-manager { background: rgba(255,255,255,0.02); border-radius: 15px; border: 1px solid var(--glass-border); padding: 20px; }
+        .file-item { padding: 12px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 10px; font-size: 0.85rem; transition: 0.2s; }
+        .file-item:hover { background: var(--glass); color: var(--primary); }
+
+        /* KONZOLA */
+        .console-box { background: #000; border-radius: 15px; border: 1px solid #222; overflow: hidden; display: flex; flex-direction: column; }
+        .console-header { background: #111; padding: 10px 20px; font-size: 0.7rem; color: #555; display: flex; justify-content: space-between; }
+        #p-console { height: 450px; padding: 20px; overflow-y: auto; font-family: 'Fira Code', monospace; font-size: 0.85rem; line-height: 1.5; color: #00f2ff; }
+
+        /* ERROR SYSTÉM */
+        .error-line { color: #ff4b2b; font-family: 'Fira Code', monospace; font-size: 0.7rem; margin-bottom: 2px; }
+        .support-overlay {
+            background: linear-gradient(45deg, #ff0000, #ff00c8); color: white;
+            padding: 25px; border-radius: 15px; text-align: center; margin-top: 20px;
+            animation: pulse-danger 0.5s infinite alternate;
+        }
+        @keyframes pulse-danger { from { transform: scale(1); } to { transform: scale(1.02); } }
+
+        /* EDITOR */
+        #editor-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 2000; padding: 50px; }
+        .editor-wrap { height: 100%; background: #080808; border-radius: 20px; border: 1px solid #333; display: flex; flex-direction: column; }
+        textarea { flex-grow: 1; background: transparent; color: #fff; padding: 30px; font-family: 'Fira Code', monospace; border: none; outline: none; resize: none; font-size: 1rem; }
+
+        /* BADGE */
+        .dehisk-badge {
+            position: fixed; bottom: 20px; right: 20px; padding: 10px 20px;
+            background: black; border: 1px solid var(--primary); border-radius: 50px;
+            font-weight: 900; font-size: 0.6rem; z-index: 5000; box-shadow: 0 0 15px var(--primary);
+        }
+
+        footer { padding: 40px; text-align: center; opacity: 0.3; font-size: 0.7rem; letter-spacing: 2px; }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="dehisk-gradient" style="font-size: 1.5rem;" onclick="showSection('hero')">MY-MC.EU</div>
+        <div class="nav-links" id="nav-guest">
+            <a onclick="showSection('hero')">Domov</a>
+            <a onclick="showSection('shop')">Obchod</a>
+            <a onclick="showSection('login-page')" style="color:var(--primary)">Login</a>
+        </div>
+        <div class="nav-links" id="nav-user" style="display:none;">
+            <a onclick="showSection('my-servers')">Servery</a>
+            <a onclick="showSection('create-srv')">Vytvoriť</a>
+            <a onclick="showSection('shop')">Obchod</a>
+            <a onclick="logout()" style="color:var(--danger)">Odhlásiť [<span id="u-name"></span>]</a>
+        </div>
+    </nav>
+
+    <div class="dehisk-badge">POWERED BY <span class="dehisk-gradient">DEHISK</span></div>
+
+    <!-- HERO -->
+    <section id="hero" class="page-section active hero">
+        <div data-aos="zoom-in">
+            <h1 class="dehisk-gradient">NEXT-GEN<br>MINECRAFT</h1>
+            <p style="opacity:0.5; letter-spacing: 10px;">DEHISK INFRASTRUCTURE</p>
+            <br><br>
+            <button class="btn btn-primary" onclick="gate('create-srv')">ZAČNI HOSTOVAŤ</button>
+        </div>
+    </section>
+
+    <!-- LOGIN / REG -->
+    <section id="login-page" class="page-section">
+        <div style="max-width: 400px; margin: 0 auto;">
+            <div class="glass-card" id="l-box">
+                <h2 class="dehisk-gradient">LOGIN</h2>
+                <input type="text" id="log-u" placeholder="Meno">
+                <input type="password" id="log-p" placeholder="Heslo">
+                <button class="btn btn-primary" style="width:100%" onclick="handleLogin()">VSTÚPIŤ</button>
+                <p onclick="toggleAuth()" style="margin-top:20px; cursor:pointer; font-size:0.7rem; opacity:0.5;">Nemáš účet? Registruj sa.</p>
+            </div>
+            <div class="glass-card" id="r-box" style="display:none;">
+                <h2 class="dehisk-gradient">REGISTER</h2>
+                <input type="text" id="reg-u" placeholder="Zvoľ meno">
+                <input type="password" id="reg-p" placeholder="Zvoľ heslo">
+                <button class="btn btn-primary" style="width:100%; background:var(--success)" onclick="handleRegister()">VYTVORIŤ ÚČET</button>
+                <p onclick="toggleAuth()" style="margin-top:20px; cursor:pointer; font-size:0.7rem; opacity:0.5;">Už máš účet? Prihlás sa.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- MOJE SERVERY -->
+    <section id="my-servers" class="page-section">
+        <div class="container" style="padding: 0 40px;">
+            <h2 class="dehisk-gradient" style="font-size: 2.5rem; margin-bottom: 30px;">TVOJE INSTANCIE</h2>
+            <div id="srv-list" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px;"></div>
+        </div>
+    </section>
+
+    <!-- VYTVORIŤ SERVER -->
+    <section id="create-srv" class="page-section">
+        <div style="max-width: 500px; margin: 0 auto;">
+            <div class="glass-card">
+                <h2 class="dehisk-gradient">NOVÝ UZOL</h2>
+                <input type="text" id="new-n" placeholder="Názov servera">
+                <select id="new-v">
+                    <option value="1.20.1">Verzia 1.20.1</option>
+                    <option value="1.19.4">Verzia 1.19.4</option>
+                    <option value="1.16.5">Verzia 1.16.5</option>
+                </select>
+                <button class="btn btn-primary" style="width:100%" onclick="createServer()">GENEROVAŤ SERVER</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- PANEL -->
+    <section id="panel-sec" class="page-section">
+        <div class="panel-grid">
+            <div class="file-manager">
+                <h4 class="dehisk-gradient" style="font-size: 0.7rem; margin-bottom: 15px;">FILESYSTEM</h4>
+                <div id="file-list-div"></div>
+            </div>
+            <div class="console-box">
+                <div class="console-header">
+                    <span id="p-ip-display">IP: 0.0.0.0:0000</span>
+                    <span>DEHISK TERMINAL v1.0</span>
+                </div>
+                <div id="p-console"></div>
+                <div id="p-errors" style="padding: 0 20px;"></div>
+                <div style="padding: 20px; display:flex; gap:10px; background:#050505;">
+                    <button class="btn btn-primary" style="flex:1" onclick="startServer()">START</button>
+                    <button class="btn btn-primary" style="flex:1; background:var(--danger)" onclick="location.reload()">STOP</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- OBCHOD -->
+    <section id="shop" class="page-section">
+        <div style="max-width: 600px; margin: 0 auto; text-align: center;">
+            <h2 class="dehisk-gradient" style="font-size: 3rem;">OBCHOD</h2>
+            <div class="glass-card" style="margin-top: 30px; border: 2px solid var(--primary);">
+                <h3>DEHISK PREMIUM (FREE)</h3>
+                <p style="font-size: 2.5rem; font-weight: 900; margin: 20px 0;">0.00€</p>
+                <ul style="text-align: left; margin-bottom: 20px; opacity: 0.7; font-size: 0.9rem; list-style: none;">
+                    <li>• 6 GB DDR4 RAM</li>
+                    <li>• 2x vCPU Dehisk Core</li>
+                    <li>• Neobmedzené NVMe</li>
+                </ul>
+                <select id="shop-select"></select>
+                <button class="btn btn-primary" style="width:100%" onclick="buyLicense()">AKTIVOVAŤ</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- EDITOR MODAL -->
+    <div id="editor-modal">
+        <div class="editor-wrap">
+            <div style="padding: 15px 25px; background: #111; display:flex; justify-content:space-between; align-items:center;">
+                <span id="edit-file-name" class="dehisk-gradient" style="font-size: 0.8rem;">file.txt</span>
+                <div style="display:flex; gap:10px;">
+                    <button class="btn btn-primary" style="padding: 5px 15px; font-size:0.6rem;" onclick="saveFile()">ULOŽIŤ</button>
+                    <button class="btn btn-primary" style="padding: 5px 15px; font-size:0.6rem; background:var(--danger);" onclick="closeEditor()">ZAVRIEŤ</button>
+                </div>
+            </div>
+            <textarea id="edit-area" spellcheck="false"></textarea>
+        </div>
+    </div>
+
+    <footer>POWERED BY DEHISK | ALL RIGHTS RESERVED 2026</footer>
+
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        AOS.init();
+
+        // TVOJA KONFIGURÁCIA
+        const IP = '185.107.193.11', PORT = 21301, POCET_BOTOV = 50, VERZIA = '1.20.1', HESLO = "heslo123";
+
+        let user = null;
+        let activeIdx = null;
+        let activeFile = "";
+
+        const def_props = `#Minecraft server properties\n#Generated by Dehisk\npvp=true\nmax-players=20\nlevel-name=world\nmotd=A Server by Dehisk\nonline-mode=false\nserver-port=25565`;
+
+        function showSection(id) {
+            document.querySelectorAll('.page-section').forEach(s => s.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            if(id === 'my-servers') renderServers();
+            if(id === 'shop') updateShopSelect();
+        }
+
+        function toggleAuth() {
+            let l = document.getElementById('l-box'), r = document.getElementById('r-box');
+            l.style.display = l.style.display === 'none' ? 'block' : 'none';
+            r.style.display = r.style.display === 'none' ? 'block' : 'none';
+        }
+
+        function handleRegister() {
+            let u = document.getElementById('reg-u').value, p = document.getElementById('reg-p').value;
+            if(!u || !p) return alert("Vyplň všetko!");
+            let db = JSON.parse(localStorage.getItem('my_mc_final') || "{}");
+            db[u] = { pass: p, servers: [] };
+            localStorage.setItem('my_mc_final', JSON.stringify(db));
+            alert("OK! Prihlás sa."); toggleAuth();
+        }
+
+        function handleLogin() {
+            let u = document.getElementById('log-u').value, p = document.getElementById('log-p').value;
+            let db = JSON.parse(localStorage.getItem('my_mc_final') || "{}");
+            if(db[u] && db[u].pass === p) {
+                user = u;
+                document.getElementById('u-name').innerText = u;
+                document.getElementById('nav-guest').style.display = 'none';
+                document.getElementById('nav-user').style.display = 'flex';
+                showSection('my-servers');
+            } else alert("Zlé údaje!");
+        }
+
+        function logout() { location.reload(); }
+
+        function createServer() {
+            let n = document.getElementById('new-n').value, v = document.getElementById('new-v').value;
+            if(!n) return alert("Meno!");
+            let db = JSON.parse(localStorage.getItem('my_mc_final'));
+            db[user].servers.push({
+                name: n, ver: v, sub: n.toLowerCase() + ".my-mc.eu", port: Math.floor(Math.random()*10000)+20000,
+                active: false,
+                files: { 'server.properties': def_props, 'whitelist.json': '[]', 'ops.json': '[]' }
+            });
+            localStorage.setItem('my_mc_final', JSON.stringify(db));
+            showSection('my-servers');
+        }
+
+        function renderServers() {
+            let div = document.getElementById('srv-list');
+            div.innerHTML = "";
+            let db = JSON.parse(localStorage.getItem('my_mc_final'));
+            db[user].servers.forEach((s, i) => {
+                div.innerHTML += `
+                <div class="glass-card">
+                    <h3 class="dehisk-gradient">${s.name}</h3>
+                    <p style="font-size:0.7rem; margin:10px 0;">${s.sub}:${s.port}</p>
+                    <button class="btn btn-primary" style="width:100%; font-size:0.7rem;" onclick="openPanel(${i})">TERMINÁL</button>
+                </div>`;
+            });
+        }
+
+        function openPanel(idx) {
+            activeIdx = idx;
+            let db = JSON.parse(localStorage.getItem('my_mc_final'));
+            let s = db[user].servers[idx];
+            document.getElementById('p-ip-display').innerText = `IP: ${s.sub}:${s.port}`;
+            document.getElementById('p-console').innerHTML = "SYSTEM READY...";
+            document.getElementById('p-errors').innerHTML = "";
+            
+            let fDiv = document.getElementById('file-list-div');
+            fDiv.innerHTML = "";
+            Object.keys(s.files).forEach(f => {
+                fDiv.innerHTML += `<div class="file-item" onclick="openEditor('${f}')"><i class="fas fa-file"></i> ${f}</div>`;
+            });
+            showSection('panel-sec');
+        }
+
+        function openEditor(f) {
+            activeFile = f;
+            let db = JSON.parse(localStorage.getItem('my_mc_final'));
+            document.getElementById('edit-area').value = db[user].servers[activeIdx].files[f];
+            document.getElementById('edit-file-name').innerText = "EDITING: " + f;
+            document.getElementById('editor-modal').style.display = 'block';
+        }
+
+        function saveFile() {
+            let db = JSON.parse(localStorage.getItem('my_mc_final'));
+            db[user].servers[activeIdx].files[activeFile] = document.getElementById('edit-area').value;
+            localStorage.setItem('my_mc_final', JSON.stringify(db));
+            alert("Uložené!");
+        }
+
+        function closeEditor() { document.getElementById('editor-modal').style.display = 'none'; }
+
+        function startServer() {
+            let db = JSON.parse(localStorage.getItem('my_mc_final'));
+            let s = db[user].servers[activeIdx];
+            let con = document.getElementById('p-console');
+            
+            con.innerHTML += "<br>[Dehisk OS] Booting system...";
+            setTimeout(() => {
+                if(!s.active) {
+                    con.innerHTML += "<br><span style='color:red'>[FATAL] LICENSE_NOT_FOUND</span>";
+                    let logs = "";
+                    for(let i=0; i<35; i++) logs += `<div class="error-line">ERROR_0x${Math.random().toString(16).slice(2,8)}: Verification failed in DehiskCore.dll</div>`;
+                    logs += `<div class="support-overlay"><h3>LICENCIA NENÁJDENÁ!</h3><p>Choď na <a href="https://support.my-mc.eu" style="color:white; font-weight:bold;">support.my-mc.eu</a></p></div>`;
+                    document.getElementById('p-errors').innerHTML = logs;
+                } else {
+                    con.innerHTML += "<br><span style='color:var(--success)'>[ONLINE] Server beží na Dehisk Core!</span>";
+                }
+            }, 1000);
+        }
+
+        function updateShopSelect() {
+            let db = JSON.parse(localStorage.getItem('my_mc_final'));
+            let sel = document.getElementById('shop-select');
+            sel.innerHTML = "";
+            db[user].servers.forEach((s, i) => { if(!s.active) sel.innerHTML += `<option value="${i}">${s.name}</option>`; });
+        }
+
+        function buyLicense() {
+            let idx = document.getElementById('shop-select').value;
+            if(idx === "") return;
+            let db = JSON.parse(localStorage.getItem('my_mc_final'));
+            db[user].servers[idx].active = true;
+            localStorage.setItem('my_mc_final', JSON.stringify(db));
+            alert("Aktivované!"); showSection('my-servers');
+        }
+
+        function gate(t) { if(!user) showSection('login-page'); else showSection(t); }
+    </script>
+</body>
+</html>
